@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 工具导航 - 管理后台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+        }
+
+        .admin-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .tool-form {
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #4f46e5;
+        }
+
+        .tools-list {
+            margin-top: 30px;
+        }
+
+        .tool-item {
+            padding: 15px;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .tool-actions button {
+            margin-left: 10px;
+        }
+
+        .delete-btn {
+            background: #dc2626;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-container">
+        <h1>AI 工具管理</h1>
+        
+        <form class="tool-form" id="toolForm">
+            <div class="form-group">
+                <label for="name">工具名称</label>
+                <input type="text" id="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">工具描述</label>
+                <textarea id="description" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="category">分类</label>
+                <input type="text" id="categoryName" required placeholder="请输入分类名称">
+                <select id="category" required>
+                    <option value="">选择已有分类</option>
+                </select>
+                <button type="button" id="addCategory">添加新分类</button>
+            </div>
+            
+            <div class="form-group">
+                <label for="url">访问链接</label>
+                <input type="url" id="url" required placeholder="请输入完整网址（例如：https://www.example.com）">
+            </div>
+            
+            <button type="submit">添加工具</button>
+        </form>
+
+        <div class="tools-list" id="toolsList">
+            <!-- 工具列表将通过 JavaScript 动态生成 -->
+        </div>
+    </div>
+
+    <script>
+        // 工具数据存储
+        let tools = JSON.parse(localStorage.getItem('aiTools')) || [];
+
+        // 分类数据存储
+        let categories = JSON.parse(localStorage.getItem('aiCategories')) || [
+            { id: 'chat', name: 'AI 对话工具' },
+            { id: 'image', name: 'AI 图像工具' },
+            { id: 'dev', name: 'AI 开发工具' }
+        ];
+
+        // 初始化分类
+        function initCategories() {
+            const select = document.getElementById('category');
+            select.innerHTML = '<option value="">选择已有分类</option>' + 
+                categories.map(cat => `
+                    <option value="${cat.id}">${cat.name}</option>
+                `).join('');
+            localStorage.setItem('aiCategories', JSON.stringify(categories));
+        }
+
+        // 添加新分类
+        document.getElementById('addCategory').addEventListener('click', function() {
+            const categoryName = document.getElementById('categoryName').value;
+            if (categoryName) {
+                const categoryId = categoryName.toLowerCase().replace(/\s+/g, '-');
+                categories.push({ id: categoryId, name: categoryName });
+                initCategories();
+                document.getElementById('categoryName').value = '';
+            }
+        });
+
+        // 修改 getCategoryName 函数
+        function getCategoryName(categoryId) {
+            const category = categories.find(cat => cat.id === categoryId);
+            return category ? category.name : categoryId;
+        }
+
+        // 添加工具
+        document.getElementById('toolForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            let url = document.getElementById('url').value;
+            
+            // 如果URL没有协议前缀，自动添加 https://
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+            
+            const tool = {
+                id: Date.now(),
+                name: document.getElementById('name').value,
+                description: document.getElementById('description').value,
+                category: document.getElementById('category').value,
+                url: url
+            };
+            
+            tools.push(tool);
+            localStorage.setItem('aiTools', JSON.stringify(tools));
+            
+            renderTools();
+            this.reset();
+        });
+
+        // 渲染工具列表
+        function renderTools() {
+            const toolsList = document.getElementById('toolsList');
+            toolsList.innerHTML = tools.map(tool => `
+                <div class="tool-item">
+                    <div class="tool-info">
+                        <h3>${tool.name}</h3>
+                        <p>${tool.description}</p>
+                        <small>分类：${getCategoryName(tool.category)}</small>
+                    </div>
+                    <div class="tool-actions">
+                        <button onclick="editTool(${tool.id})">编辑</button>
+                        <button class="delete-btn" onclick="deleteTool(${tool.id})">删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 删除工具
+        function deleteTool(id) {
+            if (confirm('确定要删除这个工具吗？')) {
+                tools = tools.filter(tool => tool.id !== id);
+                localStorage.setItem('aiTools', JSON.stringify(tools));
+                renderTools();
+            }
+        }
+
+        // 编辑工具
+        function editTool(id) {
+            const tool = tools.find(t => t.id === id);
+            if (tool) {
+                document.getElementById('name').value = tool.name;
+                document.getElementById('description').value = tool.description;
+                document.getElementById('category').value = tool.category;
+                document.getElementById('url').value = tool.url;
+                
+                // 删除原工具
+                tools = tools.filter(t => t.id !== id);
+                localStorage.setItem('aiTools', JSON.stringify(tools));
+            }
+        }
+
+        // 初始化渲染
+        renderTools();
+        initCategories();
+    </script>
+</body>
+</html> 

@@ -159,58 +159,97 @@
         <input type="text" class="search-box" placeholder="搜索 AI 工具...">
     </div>
 
-    <main>
-        <section class="category-section">
-            <h2 class="category-title">AI 对话工具</h2>
-            <div class="tools-grid">
-                <div class="tool-card">
-                    <h3>ChatGPT</h3>
-                    <p>OpenAI 开发的大语言模型，支持自然对话和创作</p>
-                    <a href="#">访问</a>
-                </div>
-                <div class="tool-card">
-                    <h3>Claude</h3>
-                    <p>Anthropic 开发的 AI 助手，擅长分析和写作</p>
-                    <a href="#">访问</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="category-section">
-            <h2 class="category-title">AI 图像工具</h2>
-            <div class="tools-grid">
-                <div class="tool-card">
-                    <h3>Midjourney</h3>
-                    <p>AI 艺术创作工具，生成高质量图像</p>
-                    <a href="#">访问</a>
-                </div>
-                <div class="tool-card">
-                    <h3>Stable Diffusion</h3>
-                    <p>开源图像生成模型，支持本地部署</p>
-                    <a href="#">访问</a>
-                </div>
-            </div>
-        </section>
-
-        <section class="category-section">
-            <h2 class="category-title">AI 开发工具</h2>
-            <div class="tools-grid">
-                <div class="tool-card">
-                    <h3>GitHub Copilot</h3>
-                    <p>AI 编程助手，提供代码建议和自动完成</p>
-                    <a href="#">访问</a>
-                </div>
-                <div class="tool-card">
-                    <h3>Cursor</h3>
-                    <p>集成 AI 的代码编辑器，支持代码解释和生成</p>
-                    <a href="#">访问</a>
-                </div>
-            </div>
-        </section>
+    <main id="categoriesContainer">
+        <!-- 分类区域将通过 JavaScript 动态生成 -->
     </main>
 
     <footer>
         <p>© 2024 AI 工具导航 | <a href="#" style="color: #6366f1;">关于我们</a> | <a href="#" style="color: #6366f1;">提交工具</a></p>
     </footer>
+
+    <script>
+        const tools = JSON.parse(localStorage.getItem('aiTools')) || [];
+        const categories = JSON.parse(localStorage.getItem('aiCategories')) || [
+            { id: 'chat', name: 'AI 对话工具' },
+            { id: 'image', name: 'AI 图像工具' },
+            { id: 'dev', name: 'AI 开发工具' }
+        ];
+
+        // 渲染所有分类
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            container.innerHTML = categories.map(category => `
+                <section class="category-section" data-category="${category.id}">
+                    <h2 class="category-title">${category.name}</h2>
+                    <div class="tools-grid">
+                        ${renderToolsByCategory(category.id)}
+                    </div>
+                </section>
+            `).join('');
+        }
+
+        // 按分类渲染工具
+        function renderToolsByCategory(category) {
+            const categoryTools = tools.filter(tool => tool.category === category);
+            if (categoryTools.length === 0) {
+                return getDefaultContent(category);
+            }
+            
+            return categoryTools.map(tool => `
+                <div class="tool-card">
+                    <h3>${tool.name}</h3>
+                    <p>${tool.description}</p>
+                    <a href="${tool.url}" target="_blank" rel="noopener noreferrer">访问</a>
+                </div>
+            `).join('');
+        }
+
+        // 获取默认内容
+        function getDefaultContent(category) {
+            const defaults = {
+                chat: `
+                    <div class="tool-card">
+                        <h3>ChatGPT</h3>
+                        <p>OpenAI 开发的大语言模型，支持自然对话和创作</p>
+                        <a href="https://chat.openai.com" target="_blank" rel="noopener noreferrer">访问</a>
+                    </div>
+                `,
+                image: `
+                    <div class="tool-card">
+                        <h3>Midjourney</h3>
+                        <p>AI 艺术创作工具，生成高质量图像</p>
+                        <a href="https://www.midjourney.com" target="_blank" rel="noopener noreferrer">访问</a>
+                    </div>
+                `,
+                dev: `
+                    <div class="tool-card">
+                        <h3>GitHub Copilot</h3>
+                        <p>AI 编程助手，提供代码建议和自动完成</p>
+                        <a href="https://github.com/features/copilot" target="_blank" rel="noopener noreferrer">访问</a>
+                    </div>
+                `
+            };
+            return defaults[category] || '';
+        }
+
+        // 初始化渲染
+        renderCategories();
+
+        // 搜索功能
+        document.querySelector('.search-box').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.tool-card').forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const description = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    </script>
 </body>
 </html> 
