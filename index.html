@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 工具导航 - 你的 AI 工具集合地</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .search-container {
+            max-width: 600px;
+            margin: -25px auto 20px;
+            padding: 0 20px;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-size: 1rem;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .category-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .category-title {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .category-title::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 24px;
+            background: #6366f1;
+            margin-right: 10px;
+            border-radius: 2px;
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .tool-card {
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .tool-card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            transform: translateY(-4px);
+        }
+
+        .tool-card h3 {
+            color: #1a1a1a;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .tool-card p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .tool-card a {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #6366f1;
+            color: white;
+            text-decoration: none;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .tool-card a:hover {
+            background: #4f46e5;
+        }
+
+        footer {
+            text-align: center;
+            padding: 30px;
+            background: #fff;
+            margin-top: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .tools-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-section {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI 工具导航</h1>
+        <p>发现、探索和使用最新的 AI 工具</p>
+    </header>
+
+    <div class="search-container">
+        <input type="text" class="search-box" placeholder="搜索 AI 工具...">
+    </div>
+
+    <main>
+        <section class="category-section">
+            <h2 class="category-title">AI 对话工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>ChatGPT</h3>
+                    <p>OpenAI 开发的大语言模型，支持自然对话和创作</p>
+                    <a href="#">访问</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Claude</h3>
+                    <p>Anthropic 开发的 AI 助手，擅长分析和写作</p>
+                    <a href="#">访问</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="category-section">
+            <h2 class="category-title">AI 图像工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>Midjourney</h3>
+                    <p>AI 艺术创作工具，生成高质量图像</p>
+                    <a href="#">访问</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Stable Diffusion</h3>
+                    <p>开源图像生成模型，支持本地部署</p>
+                    <a href="#">访问</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="category-section">
+            <h2 class="category-title">AI 开发工具</h2>
+            <div class="tools-grid">
+                <div class="tool-card">
+                    <h3>GitHub Copilot</h3>
+                    <p>AI 编程助手，提供代码建议和自动完成</p>
+                    <a href="#">访问</a>
+                </div>
+                <div class="tool-card">
+                    <h3>Cursor</h3>
+                    <p>集成 AI 的代码编辑器，支持代码解释和生成</p>
+                    <a href="#">访问</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2024 AI 工具导航 | <a href="#" style="color: #6366f1;">关于我们</a> | <a href="#" style="color: #6366f1;">提交工具</a></p>
+    </footer>
+</body>
+</html> 
